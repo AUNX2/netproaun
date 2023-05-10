@@ -1,0 +1,16 @@
+body{
+    background-image : url('01.gif');
+    background-repeat : no-repeat;
+    background-attachment : fixed;
+    background-size : 100% 100%;
+}
+.page{
+    width: auto;
+    height: auto;
+}
+@media only screen and (min-width:360px) and (max-width:760px){
+    .page{
+        width: 160vh;
+        height: auto;
+    }
+}
