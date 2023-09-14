@@ -53,7 +53,7 @@ def subscribe(client: mqtt):
     client.subscribe(topic)
     client.on_message = on_message
 
-def insert_data(CompanyCode,DeviceType,Data,Temp,Humid,Info,Datetime):
+def insert_data(CompanyCode,DeviceType,Data,Temp,Humid,Info,Datetime,Status):
    #ทำการเชื่อมต่อกับฐานข้อมูลง่าย ๆ แค่ใส่ Host / User / Password ให้ถูกต้อง
     vibra_db = mysql.connector.connect(
         host="sql12.freesqldatabase.com",
@@ -65,8 +65,8 @@ def insert_data(CompanyCode,DeviceType,Data,Temp,Humid,Info,Datetime):
 
     db_cursor = vibra_db.cursor()
 
-    sql = "insert into project(CompanyCode,DeviceType,Data,Temp,Humid,Info,datetime) values(%s,%s,%s,%s,%s,%s,%s)"
-    val=(str(CompanyCode),str(DeviceType),str(Data),str(Temp),str(Humid),str(Info),str(Datetime))
+    sql = "insert into project(CompanyCode,DeviceType,Data,Temp,Humid,Info,datetime,status) values(%s,%s,%s,%s,%s,%s,%s,%s)"
+    val=(str(CompanyCode),str(DeviceType),str(Data),str(Temp),str(Humid),str(Info),str(Datetime),str(Status))
     db_cursor.execute(sql,val)
 
     vibra_db.commit()
@@ -116,7 +116,7 @@ def processQueueTask(q):
                             datetime = time.localtime(int(unixtimereal))
                             strdatetime = (time.strftime("%Y-%m-%d %H:%M:%S", datetime))
                             print(strdatetime)
-                            insert_data(company_data,device,bit_data_Temphumid485,Temp485,Humid485,Info_temp485,strdatetime)
+                            
                             # PLC's IP address and Modbus TCP port
                             PLC_IP = '192.168.100.103'
                             PLC_PORT = 502
@@ -160,14 +160,17 @@ def processQueueTask(q):
                             # Send the message and get the response
                             if data_control>22:
                                 response = modbus_tcp.send_message(message, sock)
+                                status = "ON"
                                 print("send {} to address 0 ".format(response))
                             else:
                                 response2 = modbus_tcp.send_message(message2,sock)
+                                status = "OFF"
                                 print("send {} to address 0 ".format(response2))
 
                             # Close the socket connection
                             sock.close()
                             print("Transfer finished")
+                            insert_data(company_data,device,bit_data_Temphumid485,Temp485,Humid485,Info_temp485,strdatetime,status)
         time.sleep(5) # delay for 5 sec.
     return
 
