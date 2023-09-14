@@ -124,7 +124,7 @@ def processQueueTask(q):
                             # Modbus address (register number) to write data to
                             REGISTER_ADDRESS1 = 1 # Replace with the actual register address
                             REGISTER_ADDRESS2 = 2
-                            Temp485real = (decode_bit_humid485)
+                            Temp485real = (decode_bit_temp485)
                             # Data to send to the PLC
                             data_to_send1 = [round(Temp485real)]  # Replace with your data
                             data_to_send2 = [Humid485]
@@ -158,7 +158,7 @@ def processQueueTask(q):
                             message = modbus_tcp.write_multiple_coils(slave_id=1, starting_address=0, values=[1])
                             message2 = modbus_tcp.write_multiple_coils(slave_id=1, starting_address=0, values=[0])
                             # Send the message and get the response
-                            if data_control>30:
+                            if data_control>22:
                                 response = modbus_tcp.send_message(message, sock)
                                 print("send {} to address 0 ".format(response))
                             else:
