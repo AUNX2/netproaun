@@ -109,7 +109,7 @@ def processQueueTask(q):
                             print('Humid485 : {} RH%'.format(decode_bit_humid485))
                             Temp485 = "{:.2f}".format(decode_bit_temp485)
                             Humid485 = decode_bit_humid485
-                            Info_temp485 = 'Temp : {} Celcius , Humid : {} RH%'.format(Temp485,Humid485)
+                            Info_rs485 = 'Temp : {} Celcius , Humid : {} RH%'.format(Temp485,Humid485)
                             unixtime = str(data['upTime'])
                             unixtimereal = unixtime[0:10]
                             print("unix time : ",unixtimereal)
@@ -170,7 +170,7 @@ def processQueueTask(q):
                             # Close the socket connection
                             sock.close()
                             print("Transfer finished")
-                            insert_data(company_data,device,bit_data_Temphumid485,Temp485,Humid485,Info_temp485,strdatetime,status)
+                            insert_data(company_data,device,bit_data_Temphumid485,Temp485,Humid485,Info_rs485,strdatetime,status)
         time.sleep(5) # delay for 5 sec.
     return
 
