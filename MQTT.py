@@ -13,7 +13,7 @@ from umodbus.client import tcp as modbus_tcp
 # Create Queue Handle
 q = queue.Queue()
 
-word_485 = "4f039a7b"
+word_485 = "4f039a97"
 
 broker = 'en-apis.zifisense.com'
 port = 1883
