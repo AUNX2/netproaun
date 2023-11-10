@@ -105,10 +105,10 @@ def processQueueTask(q):
                             # Decode Bit Humid
                             bit_humid485 = (bit_data_Temphumid485[4:8])
                             print('Bit Humid485 : ',bit_humid485)
-                            decode_bit_humid485 = int(bit_humid485,16)
-                            print('Humid485 : {} RH%'.format(decode_bit_humid485))
+                            decode_bit_humid485 = int(bit_humid485,16)*0.1
+                            print('Humid485 : {:.2f} RH%' .format(decode_bit_humid485))
                             Temp485soil = "{:.2f}".format(decode_bit_temp485)
-                            Humid485soil = decode_bit_humid485
+                            Humid485soil = "{:.2f}".format(decode_bit_humid485)
                             Info_rs485soil = 'Temp : {} Celcius , Humid : {} RH%'.format(Temp485soil,Humid485soil)
                             unixtime = str(data['upTime'])
                             unixtimereal = unixtime[0:10]
@@ -126,9 +126,11 @@ def processQueueTask(q):
                             REGISTER_ADDRESS2 = 2
                             Temp485real = round(decode_bit_temp485,1)
                             Tempuse = int(Temp485real*10)
+                            Humid485real = round(decode_bit_humid485,1)
+                            Humiduse = int(Humid485real*10)
                             # Data to send to the PLC
                             data_to_send1 = [Tempuse]  # Replace with your data
-                            data_to_send2 = [Humid485soil]
+                            data_to_send2 = [Humiduse]
 
                             # Connect to the PLC
                             client2 = ModbusTcpClient(PLC_IP, port=PLC_PORT)
@@ -159,16 +161,16 @@ def processQueueTask(q):
                             message = modbus_tcp.write_multiple_coils(slave_id=1, starting_address=0, values=[1])
                             message2 = modbus_tcp.write_multiple_coils(slave_id=1, starting_address=0, values=[0])
                             # Send the message and get the response
-                            if data_control>25:
+                            if data_control>30:
                                 response = modbus_tcp.send_message(message, sock)
                                 statuslight = "ON"
                                 bitstatuslight = "1"
-                                print("send {} to address 0 ".format(response))
+                                print("send {} to address 0 ".format(bitstatuslight))
                             else:
                                 response2 = modbus_tcp.send_message(message2,sock)
                                 statuslight = "OFF"
                                 bitstatuslight = "0"
-                                print("send {} to address 0 ".format(response2))
+                                print("send {} to address 0 ".format(bitstatuslight))
 
                             # Close the socket connection
                             sock.close()
